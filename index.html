@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfTalk – Shayari & Quotes</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for an elegant, poetic theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom CSS to apply the elegant fonts and theme */
+        body {
+            font-family: 'Lora', serif;
+            background-color: #fdfaf6; /* Soft cream background */
+            color: #333;
+        }
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Style for the quote cards with glowing effect */
+        .quote-card {
+            background-color: #ffffff;
+            border-left: 4px solid #d1c4e9; /* Soft lavender accent */
+            box-shadow: 0 0 15px rgba(209, 196, 233, 0.5); /* Glowing effect */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .quote-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 0 25px rgba(209, 196, 233, 0.8); /* Enhanced glow on hover */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Main Container -->
+    <div class="container mx-auto max-w-5xl px-4 py-8 md:py-16">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-10 md:mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">SelfTalk</h1>
+            <p class="text-lg text-gray-500 mt-2">A Collection of Shayari & Quotes</p>
+        </header>
+
+        <!-- Section to Display All Quotes in a Grid Layout -->
+        <main id="quotes-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Quotes from Firebase will be dynamically inserted here as glowing boxes -->
+        </main>
+
+        <footer class="text-center mt-16">
+            <p class="text-gray-400 text-sm">&copy; 2024 SelfTalk. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK Scripts -->
+    <!-- We use type="module" for modern JavaScript imports -->
+    <script type="module">
+        // Import only the necessary functions from the Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // --- FIREBASE CONFIGURATION ---
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQaRKunxA5txCVL7lpa7rvxyrbyhYPX2E",
+            authDomain: "selftalk-2b572.firebaseapp.com",
+            databaseURL: "https://selftalk-2b572-default-rtdb.asia-southeast1.firebasedatabase.app", // CORRECTED a/c to console warning
+            projectId: "selftalk-2b572",
+            storageBucket: "selftalk-2b572.appspot.com", // Corrected the URL from your snippet
+            messagingSenderId: "1069660850189",
+            appId: "1:1069660850189:web:2a2d64b5ca1a2b14326d44"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Create a reference to the 'quotes' node in your Realtime Database
+        const quotesRef = ref(database, 'quotes');
+
+        // --- DOM ELEMENT REFERENCES ---
+        const quotesContainer = document.getElementById('quotes-container');
+        
+        // --- REALTIME DATA LISTENER ---
+        // This function listens for any changes in the 'quotes' node.
+        // It runs once on page load and then again every time you add or change data in Firebase.
+        onValue(quotesRef, (snapshot) => {
+            const data = snapshot.val();
+            quotesContainer.innerHTML = ''; // Clear the container before rendering new data
+
+            if (data) {
+                // Convert the quotes object from Firebase into an array.
+                // Sorting by timestamp has been removed. Quotes will appear in Firebase's default order.
+                const quotesArray = Object.values(data);
+                
+                // Loop through the array and display each quote on the page.
+                quotesArray.forEach(quote => {
+                    // Pass the author property instead of the timestamp
+                    const quoteElement = createQuoteElement(quote.text, quote.author);
+                    quotesContainer.appendChild(quoteElement);
+                });
+            } else {
+                // If there's no data in Firebase, show a message to the visitor.
+                quotesContainer.innerHTML = `
+                    <div class="text-center py-12 md:col-span-2">
+                        <p class="text-gray-500 italic text-lg">No quotes found. Please check back later.</p>
+                    </div>`;
+            }
+        });
+
+        // --- CREATE QUOTE CARD FUNCTION ---
+        // This function generates the HTML for a single, beautifully styled quote card.
+        const createQuoteElement = (text, author) => {
+            const div = document.createElement('div');
+            div.className = 'quote-card rounded-lg shadow-sm p-6 min-h-[200px] flex flex-col justify-between';
+            
+            // The timestamp formatting has been replaced with the author's name.
+            div.innerHTML = `
+                <div>
+                    <p class="text-xl lg:text-2xl leading-relaxed whitespace-pre-wrap italic">"${text}"</p>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-right font-medium">— ${author || 'Unknown'}</p>
+            `;
+            return div;
+        };
+    </script>
+</body>
+</html>

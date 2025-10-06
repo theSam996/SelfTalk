@@ -1,0 +1,28 @@
+{
+  "quotes": {
+    "quote1": {
+      "text": "Kabhi kabhi khud se bhi milna chahiye.",
+      "author": "Samar Kumar"
+    },
+    "quote2": {
+      "text": "Zindagi ek safar hai, manzil to bas ek bahaana hai.",
+      "author": "Samar Kumar"
+    },
+    "quote3": {
+      "text": "Har muskurahat ke peeche ek kahani hoti hai.",
+      "author": "Anonymous"
+    },
+    "quote4": {
+      "text": "Chhoti chhoti baatein hi khushiyon ka sabab hoti hain.",
+      "author": "Samar Kumar"
+    },
+    "quote5": {
+      "text": "bahut chupate ho gum samar jii",
+      "author": "Samar Kumar"
+    },
+    "quote6": {
+      "text": "i made this website for fun to learn how to add databse.",
+      "author": "Samar Kumar"
+    }
+  }
+}
